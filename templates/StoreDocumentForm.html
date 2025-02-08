@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Store a Document</h2>
+        <form id="storeForm" class="space-y-4">
+            <div>
+                <label class="block text-gray-600">Title</label>
+                <input type="text" id="title" class="w-full p-2 border rounded-lg" required>
+            </div>
+            <div>
+                <label class="block text-gray-600">Subtitle</label>
+                <input type="text" id="subtitle" class="w-full p-2 border rounded-lg" required>
+            </div>
+            <div>
+                <label class="block text-gray-600">Type</label>
+                <input type="text" id="type" class="w-full p-2 border rounded-lg" required>
+            </div>
+            <div>
+                <label class="block text-gray-600">Description</label>
+                <textarea id="description" class="w-full p-2 border rounded-lg" required></textarea>
+            </div>
+            <div>
+                <label class="block text-gray-600">Tags (comma separated)</label>
+                <input type="text" id="tags" class="w-full p-2 border rounded-lg">
+            </div>
+            <div>
+                <label class="block text-gray-600">Source</label>
+                <input type="text" id="source" class="w-full p-2 border rounded-lg">
+            </div>
+            <div>
+                <label class="block text-gray-600">Timestamp</label>
+                <input type="datetime-local" id="timestamp" class="w-full p-2 border rounded-lg">
+            </div>
+            <div>
+                <label class="block text-gray-600">Document Text</label>
+                <textarea id="text" class="w-full p-2 border rounded-lg" required></textarea>
+            </div>
+            <button type="button" onclick="submitForm()" class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600">Submit</button>
+        </form>
+        <p id="responseMessage" class="mt-4 text-center text-green-600"></p>
+    </div>
+
+    <script>
+        async function submitForm() {
+            const metadata = {
+                title: document.getElementById('title').value,
+                subtitle: document.getElementById('subtitle').value,
+                type: document.getElementById('type').value,
+                description: document.getElementById('description').value,
+                tags: document.getElementById('tags').value ? document.getElementById('tags').value.split(',') : [],
+                source: document.getElementById('source').value || null,
+                timestamp: document.getElementById('timestamp').value || null
+            };
+            const text = document.getElementById('text').value;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/store/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ metadata, text })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('responseMessage').textContent = "✅ " + data.message;
+                    document.getElementById('responseMessage').classList.remove('text-red-600');
+                    document.getElementById('responseMessage').classList.add('text-green-600');
+                } else {
+                    throw new Error(data.detail || "Unknown error");
+                }
+            } catch (error) {
+                document.getElementById('responseMessage').textContent = "❌ Error: " + error.message;
+                document.getElementById('responseMessage').classList.remove('text-green-600');
+                document.getElementById('responseMessage').classList.add('text-red-600');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,8 +1,10 @@
-fastapi
+fastapi~=0.115.8
 uvicorn
-langchain
-langchain-openai
-langchain-community
-python-dotenv
+langchain~=0.3.17
+langchain-openai~=0.3.3
+langchain-community~=0.3.16
+python-dotenv~=1.0.1
 openai
 chromadb
+
+pydantic~=2.10.3
